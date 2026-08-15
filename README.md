@@ -29,7 +29,9 @@ This work is self-motivated and self-funded, and is written primarily in VB.NET 
 
 ## Project Showcase
 
-The best way to interact with this program for full control is directly through the source code - see the instructions below.
+> **Project Demo:** You can see this project live directly through the [**project build**](https://drive.google.com/drive/folders/1I0Gy7R4WSeifpzXoMtCpzPegpZxljb_F?usp=sharing) (Intel 32/64-bit). Simply download and run the "Risk Calculator.exe" application.
+
+Alternatively, one can download the source code, as instructed below, for full control.
 
 > **Program Controls:**
 >1) After opening and running the project solution in your IDE of choice, input values for the range of battles to simulate (ie: maximum number of attacking and defending troops to simulate - the program will iterate through all combinations of these numbers, from 1 to the maximum).
