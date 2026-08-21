@@ -12,7 +12,7 @@ A 'battle' in RISK is determined by a set of dice rolls, where the attacking pla
 This work is self-motivated and self-funded, and is written primarily in VB.NET as a Visual Studio console application.
 
 <p align="center">
-  <img width="100%" alt="RISK Odds" src="./readme_img/RISK Odds.png" />
+  <img width="90%" alt="RISK Odds" src="./readme_img/RISK Odds.png" />
 </p>
 
 ---
