@@ -7,7 +7,7 @@
 
 A simple program for simulating battles in the **board game RISK** (across a wide range of battle scenarios).
 
-A 'battle' in RISK is determined by a set of dice rolls, where the attacking player has a maximum of 3 dice to roll (falling below this only if they don't have enough troops to attack with), and the defending player has a maximum of 2 dice to roll. After doing so, each players' dice are each ordered from highest to lowest, and are cross-compared into a maximum of 2 sets. The defender loses a troop for each set the attacker wins, and the attacker loses a troop for each set the defender wins **or draws**. This program continuously rolls dice until a full victory is achieved for either player. Crutially, "NoOfAttackingPieces" does not include the 1 attacking troop that must remain behind in order to 'hold' the country of attack, whilst this does not apply for the defending conutry (all troops are used in battle).
+A 'battle' in RISK is determined by a set of dice rolls, where the attacking player has a maximum of 3 dice to roll (falling below this only if they don't have enough troops to attack with), and the defending player has a maximum of 2 dice to roll. After doing so, each player's dice are each ordered from highest to lowest, and are cross-compared into a maximum of 2 sets. The defender loses a troop for each set the attacker wins, and the attacker loses a troop for each set the defender wins **or draws**. This program continuously rolls dice until a full victory is achieved for either player. Crucially, "NoOfAttackingPieces" does not include the 1 attacking troop that must remain behind in order to 'hold' the country of attack, whilst this does not apply for the defending country (all troops are used in battle).
 
 This work is self-motivated and self-funded, and is written primarily in VB.NET as a Visual Studio console application.
 
@@ -19,11 +19,11 @@ This work is self-motivated and self-funded, and is written primarily in VB.NET 
 
 ## Features and Highlights
 
-✅ Application of standard RISK game logic, for handing dice rolls and win conditions, as well as excluding the 1 attacking troop to hold their country.  
+✅ Application of standard RISK game logic, for handling dice rolls and win conditions, as well as excluding the 1 attacking troop to hold their country.  
 ✅ Simulates every attacker vs defender troop combination in a single run to construct a full odds matrix, whose entries become more accurate over time (convergent behaviour).  
-✅ Outputs live results in a colourful, well-aligned gradient heat-map (where each colour represents the nature of the scenario results) to the console - self-refining, nature.  
+✅ Outputs live results in a colourful, well-aligned gradient heat-map (where each colour represents the nature of the scenario results) to the console - self-refining.  
 ✅ Live computation of simulation statistics, including batches completed, total battles simulated, and total dice rolled.  
-✅ Uses a single static Random instance, pre-allocated dice arrays, and a hand-unrolled sort avoid per-iteration overhead across billions of rolls whilst ensuring unbiased Monte Carlo results.  
+✅ Uses a single static Random instance, pre-allocated dice arrays, and a hand-unrolled sort to avoid per-iteration overhead across billions of rolls whilst ensuring unbiased Monte Carlo results.  
 
 ---
 
@@ -35,12 +35,12 @@ Alternatively, one can download the source code, as instructed below, for full c
 
 > **Program Controls:**
 >1) After opening and running the project solution in your IDE of choice, input values for the range of battles to simulate (ie: maximum number of attacking and defending troops to simulate - the program will iterate through all combinations of these numbers, from 1 to the maximum).
->2) Input the Mini Batch Size, which determines how many simulations to run (for each scenario) before updating the table of results (the larger NoOfAttackingPieces and NoOfDefendingPieces, the lower this number should be).
+>2) Input the Mini Batch Size, which determines how many simulations to run (for each scenario) before updating the table of results (the larger NoOfAttackingPieces and NoOfDefendingPieces are, the lower this number should be).
 >3) Hit "Run", and watch the table of results update in real-time!
 
 ---
 
-## Installation, and Folder Structure
+## Installation and Folder Structure
 
 ### Required Software: Visual Studio (.NET 6.0).
 

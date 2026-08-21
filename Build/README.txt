@@ -1,0 +1,4 @@
+"Risk Calculator.exe" Program Controls:
+1) After opening and running the project solution in your IDE of choice, input values for the range of battles to simulate (ie: maximum number of attacking and defending troops to simulate - the program will iterate through all combinations of these numbers, from 1 to the maximum).
+2) Input the Mini Batch Size, which determines how many simulations to run (for each scenario) before updating the table of results (the larger NoOfAttackingPieces and NoOfDefendingPieces, the lower this number should be).
+3) Hit "Run", and watch the table of results update in real-time!
