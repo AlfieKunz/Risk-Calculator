@@ -1,9 +1,12 @@
 ﻿Imports System.Net.Security
+Imports System.Threading
+Imports System.Threading.Tasks
 
 Module Program
-    Private ResultsTable(,) As Integer
+    Private ResultsTable(,) As Long
     Private BatchSize As Integer
-    Private BatchNumber, NoOfIterations, NoOfCalculations As UInt64
+    Private BatchNumber, NoOfIterations, NoOfCalculations As Long
+    Private ThreadRandom As New Threading.ThreadLocal(Of Random)(Function() New Random(Guid.NewGuid().GetHashCode()))
 
     Sub Main()
         Console.ForegroundColor = ConsoleColor.Gray
@@ -14,7 +17,7 @@ Module Program
         Dim NoOfDefendingPieces As Byte = Console.ReadLine()
         ReDim ResultsTable(NoOfAttackingPieces, NoOfDefendingPieces)
         Console.WriteLine(vbCrLf & "The batch size determines the number of tests to perform in each scenario before the table is updated.")
-        Console.Write("Please input your batch size (10 - 10,000 recommended): ")
+        Console.Write("Please input your batch size (100 - 10,000 recommended): ")
         BatchSize = Console.ReadLine()
         Console.WriteLine(vbCrLf & "Thank you! Press any key to start processing...")
         Console.ReadLine()
@@ -26,12 +29,15 @@ Module Program
         While Not Console.KeyAvailable
             Console.SetCursorPosition(0, Console.CursorTop - (8 + NoOfAttackingPieces))
 
+            NoOfIterations += BatchSize * NoOfAttackingPieces * NoOfDefendingPieces
             BatchNumber += 1
-            For x = 1 To NoOfAttackingPieces
-                For y = 1 To NoOfDefendingPieces
-                    ResultsTable(x, y) += RunTableCalculations(x, y)
-                Next
-            Next
+            Parallel.For(1, NoOfAttackingPieces + 1, Sub(x)
+                                                         For y = 1 To NoOfDefendingPieces
+                                                             Dim CalculationResults = RunTableCalculations(CByte(x), CByte(y))
+                                                             ResultsTable(x, y) += CalculationResults.Wins
+                                                             Interlocked.Add(NoOfCalculations, CalculationResults.NoDiceRolles)
+                                                         Next
+                                                     End Sub)
 
             Console.WriteLine("Batch Number: " & BatchNumber.ToString("N0") & ".    Batch Size: " & BatchSize.ToString("N0") & ".    Number of battles simulated per scenario: " & (BatchNumber * BatchSize).ToString("N0") & ".")
             Console.WriteLine("Number of scenarios calculated: " & NoOfIterations.ToString("N0") & ".    Number of dice rolls simulated: " & NoOfCalculations.ToString("N0") & "." & vbCrLf)
@@ -44,53 +50,51 @@ Module Program
     End Sub
 
 
-    Private AttackingDice(2) As Byte
-    Private DefendingDice(1) As Byte
-    Function RunTableCalculations(ByVal AttackingPieces As Byte, ByVal DefendingPieces As Byte) As Integer
-        Static RNDGen As New Random()
+    Function RunTableCalculations(ByVal AttackingPieces As Byte, ByVal DefendingPieces As Byte) As (Wins As Integer, NoDiceRolles As Integer)
+        Dim AttackingDice(2) As Byte
+        Dim DefendingDice(1) As Byte
         Dim NoOfAttackingWins As Integer
         Dim TempVar As Byte
-        Dim HasBeenSorted As Boolean
         Dim TempAttackingPieces, TempDefendingPieces As Byte
+        Dim NoDiceRolled As Integer = 0
 
         For n = 1 To BatchSize
-            NoOfIterations += 1
             TempAttackingPieces = AttackingPieces
             TempDefendingPieces = DefendingPieces
             Do
-                For a = 0 To 2
-                    If TempAttackingPieces > a Then
-                        AttackingDice(a) = RNDGen.Next(1, 7)
-                        NoOfCalculations += 1
+                AttackingDice(0) = ThreadRandom.Value.Next(1, 7)
+                If TempAttackingPieces > 1 Then
+                    AttackingDice(1) = ThreadRandom.Value.Next(1, 7)
+                    If TempAttackingPieces > 2 Then
+                        AttackingDice(2) = ThreadRandom.Value.Next(1, 7)
                     Else
-                        AttackingDice(a) = 0
+                        AttackingDice(2) = 0
                     End If
-                Next
-                For b = 0 To 1
-                    If TempDefendingPieces > b Then
-                        DefendingDice(b) = RNDGen.Next(1, 7)
-                        NoOfCalculations += 1
-                    Else
-                        DefendingDice(b) = 0
-                    End If
-                Next
+                Else
+                    AttackingDice(1) = 0
+                    AttackingDice(2) = 0
+                End If
+                DefendingDice(0) = ThreadRandom.Value.Next(1, 7)
+                DefendingDice(1) = If(TempDefendingPieces > 1, ThreadRandom.Value.Next(1, 7), 0)
+
+                NoDiceRolled += Math.Min(TempAttackingPieces, 3) + Math.Min(TempDefendingPieces, 2)
 
                 'Sorts attacking dice, if needed.
-                HasBeenSorted = True
-                For d = 0 To 1
-                    If AttackingDice(d + 1) > AttackingDice(d) Then
-                        HasBeenSorted = False
-                        TempVar = AttackingDice(d)
-                        AttackingDice(d) = AttackingDice(d + 1)
-                        AttackingDice(d + 1) = TempVar
-                    End If
-                Next
-                If Not HasBeenSorted AndAlso AttackingDice(1) > AttackingDice(0) Then
+                If AttackingDice(1) > AttackingDice(0) Then
                     TempVar = AttackingDice(0)
                     AttackingDice(0) = AttackingDice(1)
                     AttackingDice(1) = TempVar
                 End If
-
+                If AttackingDice(2) > AttackingDice(1) Then
+                    TempVar = AttackingDice(1)
+                    AttackingDice(1) = AttackingDice(2)
+                    AttackingDice(2) = TempVar
+                End If
+                If AttackingDice(1) > AttackingDice(0) Then
+                    TempVar = AttackingDice(0)
+                    AttackingDice(0) = AttackingDice(1)
+                    AttackingDice(1) = TempVar
+                End If
 
                 'Sorts defending dice, if needed.
                 If DefendingDice(1) > DefendingDice(0) Then
@@ -101,19 +105,18 @@ Module Program
 
 
                 'Performs calculation.
-                If Not (AttackingDice(0) = 0 OrElse DefendingDice(0) = 0) Then
-                    If AttackingDice(0) > DefendingDice(0) Then TempDefendingPieces -= 1 Else TempAttackingPieces -= 1
-                    If Not (AttackingDice(1) = 0 OrElse DefendingDice(1) = 0) Then
-                        If AttackingDice(1) > DefendingDice(1) Then TempDefendingPieces -= 1 Else TempAttackingPieces -= 1
-                    End If
+                If AttackingDice(0) > DefendingDice(0) Then TempDefendingPieces -= 1 Else TempAttackingPieces -= 1
+                If Not (AttackingDice(1) = 0 OrElse DefendingDice(1) = 0) Then
+                    If AttackingDice(1) > DefendingDice(1) Then TempDefendingPieces -= 1 Else TempAttackingPieces -= 1
                 End If
 
             Loop Until TempAttackingPieces = 0 OrElse TempDefendingPieces = 0
             If TempDefendingPieces = 0 Then NoOfAttackingWins += 1
         Next
 
-        Return NoOfAttackingWins
+        Return (NoOfAttackingWins, NoDiceRolled)
     End Function
+
 
     Private Sub OutputTableToConsole(ByVal NoOfAttackingPieces As Byte, ByVal NoOfDefendingPieces As Byte)
         Dim PercentageWins As Decimal
