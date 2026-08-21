@@ -46,6 +46,7 @@ Module Program
         End While
 
         Console.WriteLine(vbCrLf & "Thank you for using this program. Goodbye!")
+        Thread.Sleep(1000)
         Console.ReadLine()
     End Sub
 
