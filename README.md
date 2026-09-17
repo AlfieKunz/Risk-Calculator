@@ -25,7 +25,7 @@ This work is self-motivated and self-funded, and is written primarily in VB.NET 
 ✅ Outputs live results in a colourful, well-aligned gradient heat-map (where each colour represents the nature of the scenario results) to the console - self-refining.  
 ✅ Live computation of simulation statistics, including batches completed, total battles simulated, and total dice rolled.  
 ✅ Uses a single static Random instance, pre-allocated dice arrays, and a hand-unrolled sort to avoid per-iteration overhead across billions of rolls whilst ensuring unbiased Monte Carlo results.  
-✅ Employs parallel processing to process ~300 million dice rolls per second.  
+✅ Employs parallel processing to process over 300 million dice rolls per second (MDps).  
 
 ---
 
@@ -44,7 +44,7 @@ Alternatively, one can download the source code, as instructed below, for full c
 
 ## Installation and Folder Structure
 
-### Required Software: Visual Studio (.NET 6.0).
+### Required Software: Visual Studio (.NET 6.0, x64/x86).
 
 To install, simply clone this repository using the following terminal prompts.
 ```bash

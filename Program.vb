@@ -17,11 +17,13 @@ Module Program
         Dim NoOfDefendingPieces As Byte = Console.ReadLine()
         ReDim ResultsTable(NoOfAttackingPieces, NoOfDefendingPieces)
         Console.WriteLine(vbCrLf & "The batch size determines the number of tests to perform in each scenario before the table is updated.")
-        Console.Write("Please input your batch size (100 - 10,000 recommended): ")
+        Console.Write("Please input your batch size (1,000 - 100,000 recommended): ")
         BatchSize = Console.ReadLine()
         Console.WriteLine(vbCrLf & "Thank you! Press any key to start processing...")
         Console.ReadLine()
 
+        Dim Timer As New Stopwatch()
+        Timer.Start()
         For n = 1 To NoOfAttackingPieces + 10
             Console.WriteLine()
         Next
@@ -40,10 +42,11 @@ Module Program
                                                      End Sub)
 
             Console.WriteLine("Batch Number: " & BatchNumber.ToString("N0") & ".    Batch Size: " & BatchSize.ToString("N0") & ".    Number of battles simulated per scenario: " & (BatchNumber * BatchSize).ToString("N0") & ".")
-            Console.WriteLine("Number of scenarios calculated: " & NoOfIterations.ToString("N0") & ".    Number of dice rolls simulated: " & NoOfCalculations.ToString("N0") & "." & vbCrLf)
+            Console.WriteLine("Number of scenarios calculated: " & (NoOfIterations \ 1000000).ToString("N0") & "M.    Number of dice rolls simulated: " & (NoOfCalculations \ 1000000).ToString("N0") & "M (" & (NoOfCalculations \ (1000 * Timer.Elapsed.TotalMilliseconds)).ToString("N0") & "MDps)." & vbCrLf)
             OutputTableToConsole(NoOfAttackingPieces, NoOfDefendingPieces)
             Console.WriteLine(vbCrLf & vbCrLf & "Press ENTER to stop calculating..." & vbCrLf)
         End While
+        Timer.Stop()
 
         Console.WriteLine(vbCrLf & "Thank you for using this program. Goodbye!")
         Thread.Sleep(1000)
